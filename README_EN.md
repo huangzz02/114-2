@@ -11,7 +11,7 @@ This is a backup of the problems I solved and the corresponding code during the 
 
 ## Author
 
-- **Name**: Huang Zhenzhang  
+- **Name**: Huang Zhen-Zhang  
 - **Project Creation Date**: 2025/03/08
 
 ## License
