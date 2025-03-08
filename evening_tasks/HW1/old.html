@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡片顯示程式</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            margin: 0;
+            padding: 10px;
+            min-height: 100vh;
+        }
+        #instructions {
+            margin: 20px auto;
+            max-width: 450px;
+            width: 90%;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            font-size: 14px;
+            color: #444;
+        }
+        #instructions .content {
+            margin-left: 20px;
+        }
+        #instructions ul {
+            padding-left: 0;
+            margin-left: 20px;
+        }
+        #menu, #input-form {
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        #menu:hover, #input-form:hover {
+            transform: translateY(-2px);
+        }
+        #menu h1 {
+            color: #2c3e50;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        #input-form h2 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        #menu button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        #menu button:hover {
+            background-color: #2980b9;
+            transform: scale(1.02);
+        }
+        #input-form {
+            display: none;
+            text-align: left;
+        }
+        #input-form label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        #input-form .hint {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 2px;
+        }
+        #input-form input, #input-form select {
+            width: 100%;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
+            transition: border-color 0.3s ease;
+        }
+        #input-form input:focus, #input-form select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        #input-form button {
+            width: 48%;
+            padding: 8px;
+            margin: 10px 1% 0;
+            cursor: pointer;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        #input-form button:nth-child(2) {
+            background-color: #e74c3c;
+        }
+        #input-form button:hover {
+            background-color: #27ae60;
+            transform: scale(1.02);
+        }
+        #input-form button:nth-child(2):hover {
+            background-color: #c0392b;
+        }
+        #output {
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            white-space: pre;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            display: none;
+            width: fit-content;
+            overflow-x: auto;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* 提升手機滾動體驗 */
+        }
+
+        /* 媒體查詢：小螢幕適配 */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            #instructions, #menu, #input-form {
+                padding: 10px;
+            }
+            #menu h1 {
+                font-size: 20px;
+            }
+            #input-form h2 {
+                font-size: 18px;
+            }
+            #menu button {
+                padding: 8px;
+                font-size: 14px;
+            }
+            #input-form label {
+                font-size: 13px;
+            }
+            #input-form input, #input-form select {
+                font-size: 13px;
+                padding: 6px;
+            }
+            #input-form .hint {
+                font-size: 11px;
+            }
+            #input-form button {
+                padding: 6px;
+                font-size: 13px;
+            }
+            #output {
+                font-size: 14px;
+                padding: 10px;
+            }
+            #instructions .content {
+                margin-left: 15px;
+            }
+            #instructions ul {
+                margin-left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="instructions">
+        <div class="content">
+            <h2>使用說明</h2>
+            <p>歡迎使用卡片顯示程式！請按照以下步驟操作：</p>
+        </div>
+        <ul>
+            <li><strong>改變卡片外觀</strong>：選擇顯示樣式（默認、簡化、Unicode）。</li>
+            <li><strong>輸出卡片</strong>：自訂卡片數量、花色等選項，生成並顯示。</li>
+            <li><strong>顯示完整牌組</strong>：查看完整的 52 張撲克牌。</li>
+        </ul>
+    </div>
+    <div id="menu">
+        <h1>選擇功能</h1>
+        <button onclick="showAppearanceForm()">1. 改變卡片外觀</button>
+        <button onclick="showOutputForm()">2. 輸出卡片</button>
+        <button onclick="displayFullDeck()">3. 顯示完整牌組</button>
+    </div>
+    <div id="input-form">
+        <h2 id="form-title"></h2>
+        <div id="form-content"></div>
+        <button onclick="submitForm()">提交</button>
+        <button onclick="hideForm()">取消</button>
+    </div>
+    <div id="output"></div>
+
+    <script>
+        // 定義卡片類別
+        class Card {
+            constructor(suit, rank) {
+                this.suit = suit;
+                this.rank = rank;
+            }
+
+            defaultAppearance() {
+                const suitSymbols = { 'S': '♠', 'H': '♥', 'D': '♦', 'C': '♣' };
+                const suitSymbol = suitSymbols[this.suit];
+                const rank = this.rank;
+                let middleLines = [];
+                if (this.suit === 'S') {
+                    middleLines = ['    •••    ', '   •••••   ', '  •••••••  ', '    •••    '];
+                } else if (this.suit === 'H') {
+                    middleLines = ['   •   •   ', '  •••••••  ', '   •••••   ', '     •     '];
+                } else if (this.suit === 'D') {
+                    middleLines = ['    •••    ', '   •••••   ', '   •••••   ', '    •••    '];
+                } else if (this.suit === 'C') {
+                    middleLines = ['    •••    ', '  •  •  •  ', '  •••••••  ', '    •••    '];
+                }
+                return [
+                    '┌───────────┐',
+                    `│${rank.padEnd(11)}│`,
+                    `│${suitSymbol.padEnd(11)}│`,
+                    `│${middleLines[0]}│`,
+                    `│${middleLines[1]}│`,
+                    `│${middleLines[2]}│`,
+                    `│${middleLines[3]}│`,
+                    `│          ${suitSymbol}│`,
+                    `│          ${rank}│`,
+                    '└───────────┘'
+                ];
+            }
+
+            simpleAppearance() {
+                const suitSymbols = { 'S': '♠', 'H': '♥', 'D': '♦', 'C': '♣' };
+                const suitSymbol = suitSymbols[this.suit];
+                const rank = this.rank;
+                return [
+                    '┌───┐',
+                    `│ ${rank} │`,
+                    `│ ${suitSymbol} │`,
+                    '└───┘'
+                ];
+            }
+
+            unicodeAppearance() {
+                const unicodeCards = {
+                    'S': { 'A': '🂡', '2': '🂢', '3': '🂣', '4': '🂤', '5': '🂥', '6': '🂦', '7': '🂧', '8': '🂨', '9': '🂩', 'T': '🂪', 'J': '🂫', 'Q': '🂭', 'K': '🂮' },
+                    'H': { 'A': '🂱', '2': '🂲', '3': '🂳', '4': '🂴', '5': '🂵', '6': '🂶', '7': '🂷', '8': '🂸', '9': '🂹', 'T': '🂺', 'J': '🂻', 'Q': '🂽', 'K': '🂾' },
+                    'D': { 'A': '🃁', '2': '🃂', '3': '🃃', '4': '🃄', '5': '🃅', '6': '🃆', '7': '🃇', '8': '🃈', '9': '🃉', 'T': '🃊', 'J': '🃋', 'Q': '🃍', 'K': '🃎' },
+                    'C': { 'A': '🃑', '2': '🃒', '3': '🃓', '4': '🃔', '5': '🃕', '6': '🃖', '7': '🃗', '8': '🃘', '9': '🃙', 'T': '🃚', 'J': '🃛', 'Q': '🃝', 'K': '🃞' }
+                };
+                return [unicodeCards[this.suit][this.rank]];
+            }
+        }
+
+        // 生成牌組
+        function generateSuitDeck(suit) {
+            const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K'];
+            return ranks.map(rank => new Card(suit, rank));
+        }
+
+        function generateFullDeck() {
+            const suits = ['S', 'H', 'D', 'C'];
+            return suits.flatMap(suit => generateSuitDeck(suit));
+        }
+
+        // 顯示卡片
+        let appearanceMode = 1; // 1: default, 2: simple, 3: unicode
+
+        function displayCards(cards, row) {
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            const cardLines = cards.map(card => {
+                if (appearanceMode === 1) return card.defaultAppearance();
+                else if (appearanceMode === 2) return card.simpleAppearance();
+                else return card.unicodeAppearance();
+            });
+
+            const linesPerCard = appearanceMode === 1 ? 10 : appearanceMode === 2 ? 4 : 1;
+            let result = '';
+            for (let i = 0; i < cards.length; i += row) {
+                const rowCards = cards.slice(i, i + row);
+                const rowLines = Array(linesPerCard).fill('');
+
+                rowCards.forEach((card, index) => {
+                    const lines = cardLines[i + index];
+                    lines.forEach((line, lineIndex) => {
+                        rowLines[lineIndex] += line + ' ';
+                    });
+                });
+
+                result += rowLines.join('\n') + '\n\n';
+            }
+
+            output.textContent = result;
+            output.style.display = 'block';
+        }
+
+        // 表單顯示與處理
+        let currentFormType = '';
+
+        function showAppearanceForm() {
+            currentFormType = 'appearance';
+            const formTitle = document.getElementById('form-title');
+            const formContent = document.getElementById('form-content');
+            const inputForm = document.getElementById('input-form');
+            const current = appearanceMode === 1 ? '默認' : appearanceMode === 2 ? '簡化' : 'Unicode';
+
+            formTitle.textContent = '改變卡片外觀';
+            formContent.innerHTML = `
+                <label>當前外觀模式:</label>
+                <p>${current}</p>
+                <label>選擇新外觀模式:</label>
+                <select id="appearance-mode">
+                    <option value="1">1. 默認 (詳細圖形)</option>
+                    <option value="2">2. 簡化 (簡單圖形)</option>
+                    <option value="3">3. Unicode (單字符)</option>
+                </select>
+                <div class="hint">請選擇與當前不同的模式</div>
+            `;
+            inputForm.style.display = 'block';
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('output').style.display = 'none';
+        }
+
+        function showOutputForm() {
+            currentFormType = 'output';
+            const formTitle = document.getElementById('form-title');
+            const formContent = document.getElementById('form-content');
+            const inputForm = document.getElementById('input-form');
+
+            formTitle.textContent = '輸出卡片';
+            formContent.innerHTML = `
+                <label>是否指定花色:</label>
+                <select id="suit-random" onchange="toggleSuitOptions()">
+                    <option value="true" selected>是 (指定單一花色)</option>
+                    <option value="false">否 (使用完整牌組)</option>
+                </select>
+                <div class="hint">選擇「否」將隨機發所有牌</div>
+                <div id="suit-options">
+                    <label>花色代碼:</label>
+                    <select id="suit-code">
+                        <option value="S">S (♠)</option>
+                        <option value="H">H (♥)</option>
+                        <option value="D">D (♦)</option>
+                        <option value="C">C (♣)</option>
+                    </select>
+                    <div class="hint">選擇一種花色 (S=黑桃, H=紅心, D=方塊, C=梅花)</div>
+                    <label>是否隨機抽取:</label>
+                    <select id="draw-random">
+                        <option value="true">是 (隨機排序)</option>
+                        <option value="false">否 (按順序)</option>
+                    </select>
+                    <div class="hint">「是」將隨機排列卡片</div>
+                </div>
+                <label>卡片總數:</label>
+                <input type="number" id="total" min="1" max="13" value="1" onchange="updateRowMax()" placeholder="1 ~ 13">
+                <div class="hint" id="total-hint">範圍: 1 ~ 13 (若不指定花色則為 1 ~ 52)</div>
+                <label>每行卡片數:</label>
+                <input type="number" id="row" min="1" max="1" value="1" placeholder="1 ~ 總數">
+                <div class="hint" id="row-hint">範圍: 1 ~ 卡片總數</div>
+            `;
+            inputForm.style.display = 'block';
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('output').style.display = 'none';
+            updateRowMax();
+        }
+
+        function toggleSuitOptions() {
+            const suitRandom = document.getElementById('suit-random').value === 'true';
+            document.getElementById('suit-options').style.display = suitRandom ? 'block' : 'none';
+            updateRowMax();
+        }
+
+        function updateRowMax() {
+            const suitRandom = document.getElementById('suit-random').value === 'true';
+            const totalInput = document.getElementById('total');
+            const rowInput = document.getElementById('row');
+            const totalMax = suitRandom ? 13 : 52;
+            totalInput.max = totalMax;
+            totalInput.placeholder = `1 ~ ${totalMax}`;
+            document.getElementById('total-hint').textContent = `範圍: 1 ~ ${totalMax}`;
+            const totalValue = Math.min(totalInput.value, totalMax);
+            rowInput.max = totalValue;
+            rowInput.placeholder = `1 ~ ${totalValue}`;
+            document.getElementById('row-hint').textContent = `範圍: 1 ~ ${totalValue}`;
+        }
+
+        function hideForm() {
+            document.getElementById('input-form').style.display = 'none';
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('output').style.display = 'block';
+        }
+
+        function submitForm() {
+            const output = document.getElementById('output');
+            if (currentFormType === 'appearance') {
+                const newMode = parseInt(document.getElementById('appearance-mode').value);
+                if (newMode !== appearanceMode) {
+                    appearanceMode = newMode;
+                    output.textContent = '外觀已更改為 ' + (appearanceMode === 1 ? '默認' : appearanceMode === 2 ? '簡化' : 'Unicode');
+                    output.style.display = 'block';
+                } else {
+                    output.textContent = '請選擇與當前不同的外觀模式';
+                    output.style.display = 'block';
+                }
+            } else if (currentFormType === 'output') {
+                const suitRandom = document.getElementById('suit-random').value === 'true';
+                const suitCode = suitRandom ? document.getElementById('suit-code').value : '';
+                const drawRandom = suitRandom ? document.getElementById('draw-random').value === 'true' : true;
+                const total = parseInt(document.getElementById('total').value);
+                const row = parseInt(document.getElementById('row').value);
+
+                const totalMax = suitRandom ? 13 : 52;
+                if (total < 1 || total > totalMax) {
+                    output.textContent = `錯誤：卡片總數必須在 1 ~ ${totalMax} 之間`;
+                    output.style.display = 'block';
+                    return;
+                }
+                if (row < 1 || row > total) {
+                    output.textContent = `錯誤：每行卡片數必須在 1 ~ ${total} 之間`;
+                    output.style.display = 'block';
+                    return;
+                }
+
+                let deck = suitRandom ? generateSuitDeck(suitCode) : generateFullDeck();
+                if (drawRandom) {
+                    deck = deck.sort(() => Math.random() - 0.5);
+                }
+                const selectedCards = deck.slice(0, total);
+                displayCards(selectedCards, row);
+            }
+            document.getElementById('input-form').style.display = 'none';
+            document.getElementById('menu').style.display = 'block';
+        }
+
+        // 顯示完整牌組
+        function displayFullDeck() {
+            const deck = generateFullDeck();
+            displayCards(deck, 13);
+            document.getElementById('menu').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
