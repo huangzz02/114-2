@@ -2,6 +2,7 @@
 #include "card.h"
 #include <iostream>
 #include <string>
+#include <limits>
 #include <cctype>
 #include <vector>
 #include <algorithm> // Shuffle deck

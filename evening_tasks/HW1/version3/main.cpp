@@ -2,6 +2,7 @@
 #include "card.h"
 #include <iostream>
 #include <string>
+#include <limits>
 #include <cctype>
 #include <vector>
 #include <algorithm> // Shuffle deck
@@ -25,31 +26,16 @@ void display_cards(const vector<Card>& cards, int row) {
         }
     }
 
+    int cols_per_card;
+    if (appearance_mode == 1) cols_per_card = 10;
+    else if (appearance_mode == 2) cols_per_card = 4;
+    else cols_per_card = 1;
+
     _setmode(_fileno(stdout), _O_U16TEXT); // transform to wide character
-    if (appearance_mode == 1) { // default_appearance: 10 lines
-        for (size_t i = 0; i < cards.size(); i += row) {
-            for (int j = 0; j < 10; ++j) {
-                for (size_t k = i; k < i + row && k < cards.size(); ++k) {
-                    wcout << all_card_lines[k][j] << L" ";
-                }
-                wcout << endl;
-            }
-            wcout << endl;
-        }
-    } else if (appearance_mode == 2) {
-        for (size_t i = 0; i < cards.size(); i += row) {
-            for (int j = 0; j < 4; ++j) {
-                for (size_t k = i; k < i + row && k < cards.size(); ++k) {
-                    wcout << all_card_lines[k][j] << L" ";
-                }
-                wcout << endl;
-            }
-            wcout << endl;
-        }
-    } else { // unicode_appearance: 1 line
-        for (size_t i = 0; i < cards.size(); i += row) {
+    for (size_t i = 0; i < cards.size(); i += row) {
+        for (int j = 0; j < cols_per_card; ++j) {
             for (size_t k = i; k < i + row && k < cards.size(); ++k) {
-                wcout << all_card_lines[k][0] << L" ";
+                wcout << all_card_lines[k][j] << L" ";
             }
             wcout << endl;
         }
@@ -411,7 +397,7 @@ int main() {
             vector<Card> deck = Card::generate_full_deck();
             
             display_cards(deck, 13);
-
+            
         } else if (choice == 4) {
             cout << "Goodbye!" << endl;
             break;
