@@ -170,5 +170,6 @@ int main() {
             7.1. Removed (The auto mode is not yet completed)
 
     Supplement: The core change is 4.2.
-    Note: This program can only handle the situation of one box at the moment.
+    Note1: This program can only handle the situation of one box at the moment.
+    Note2: Before the game ends, the player can move to the goal (The goal icon will be replaced by the player icon temporarily).
 */

@@ -43,8 +43,7 @@ bool Move::movePlayer(char direction) {
         maze_.setIsGameOver(true);
     }
 
-    if (maze_.getMaze()[newPlayerPos.x][newPlayerPos.y] != Maze::GOAL &&  // Player cannot move to goal directly
-        isValidMove(newPlayerPos.x, newPlayerPos.y) && isValidMove(newBoxPos.x, newBoxPos.y)) {
+    if (isValidMove(newPlayerPos.x, newPlayerPos.y) && isValidMove(newBoxPos.x, newBoxPos.y)) {
         if (isBoxMoved) {
             maze_.getBoxIsMovedHistory().push(true);
         } else {
@@ -54,7 +53,8 @@ bool Move::movePlayer(char direction) {
         maze_.getPlayerPositionHistory().push(maze_.getPlayer());
         maze_.getBoxPositionHistory().push(maze_.getBox());
 
-        maze_.setMazeCell(maze_.getPlayer().x, maze_.getPlayer().y, Maze::PATH);
+        maze_.setMazeCell(maze_.getPlayer().x, maze_.getPlayer().y,
+                          (maze_.getPlayer().x == maze_.getGoal().x && maze_.getPlayer().y == maze_.getGoal().y) ? Maze::GOAL : Maze::PATH);
         maze_.setMazeCell(newPlayerPos.x, newPlayerPos.y, Maze::PLAYER);
         maze_.setPlayer(newPlayerPos);
         if (isBoxMoved) {
@@ -78,7 +78,8 @@ void Move::undoMove() {
         maze_.setMazeCell(maze_.getBox().x, maze_.getBox().y, Maze::PATH);
         maze_.setMazeCell(maze_.getPlayer().x, maze_.getPlayer().y, Maze::BOX);
     } else {
-        maze_.setMazeCell(maze_.getPlayer().x, maze_.getPlayer().y, Maze::PATH);
+        maze_.setMazeCell(maze_.getPlayer().x, maze_.getPlayer().y,
+                          (maze_.getPlayer().x == maze_.getGoal().x && maze_.getPlayer().y == maze_.getGoal().y) ? Maze::GOAL : Maze::PATH);
     }
     
     maze_.setPlayer(maze_.getPlayerPositionHistory().top());
